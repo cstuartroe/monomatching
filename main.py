@@ -505,5 +505,20 @@ def make_toki_pona_cards():
     card_back.save(f"{TOKI_PONA_DECK_DIR}/back.png")
 
 
+def make_favicon():
+    img = Image.new("RGBA", (800, 800), (255, 255, 255))
+    draw = ImageDraw.Draw(img)
+    draw.text(
+        (400, 400),
+        "alasa",
+        (0, 0, 0),
+        font=TOKI_PONA_FONT_LARGE,
+        anchor="mm",
+        features=["liga"],
+    )
+    img.save("static/favicon.ico")
+
+
 if __name__ == "__main__":
     make_toki_pona_cards()
+    make_favicon()
