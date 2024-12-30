@@ -4,7 +4,9 @@
     <style>
         @font-face { font-family: sitelenselikiwenasuki; src: url({{ url_for('static', filename='sitelenselikiwenasuki.ttf') }}); }
 
-        body {
+        h2, div {
+            font-family: sitelenselikiwenasuki, sans-serif;
+            white-space: pre;
         }
 
         img {
@@ -17,8 +19,7 @@
 
         h2 {
             text-align: center;
-            font-family: sans-serif;
-            font-size: 3.5vh;
+            font-size: 5vh;
             margin-bottom: 1vh;
             color: #000099;
             background-color: #ffff63;
@@ -29,53 +30,56 @@
             padding: 0 calc(40vw - 40vh);
         }
 
-        #new_game, #answer {
+        #new_game, #answer, #buy {
             cursor: pointer;
             text-align: center;
-            font-family: sans-serif;
             padding: 2vh;
-            font-size: 2vh;
+            font-size: 3vh;
         }
 
         a {
             color: #000099;
         }
 
-        .sitelen {
-            font-family: sitelenselikiwenasuki, sans-serif;
-            font-size: 150%;
+        .roman {
+            font-feature-settings: "liga" 0;
+            white-space: pre;
         }
     </style>
 </head>
 <body>
-<h2 id="instructions"><span class="sitelen">o awen</span> wait...</h2>
+<h2 id="instructions">o awen&nbsp;<span id="instructions-roman" class="roman">wait...</span></h2>
 <div id="cards">
     <img id="left" src="/static/img/back.png"/>
     <img id="right" src="/static/img/back.png"/>
 </div>
 <div id="new_game"></div>
 <div id="answer"></div>
+<div id="buy"></div>
 <script>
     setTimeout(
         () => {
             fetch("/pair")
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById("instructions").innerHTML = "<span class='sitelen'>o alasa e sama</span> find the match!";
+                    document.getElementById("instructions").innerHTML = 'o alasa e sama&nbsp;<span class="roman">find&nbsp;the&nbsp;match!</span>';
+
                     ["left", "right"].forEach(side => {
                         document.getElementById(side).setAttribute("src", `static/img/${data[side]}.png`)
-                    })
+                    });
 
-                    document.getElementById("new_game").innerHTML = "<span class='sitelen'>o musi sin</span> new game"
+                    document.getElementById("new_game").innerHTML = 'o musi sin&nbsp;<span class="roman">new&nbsp;game</span>';
                     document.getElementById("new_game").onclick = () => window.location.reload();
 
                     const answer = data['answer'];
-                    document.getElementById("answer").innerHTML = "<span class='sitelen'>o lukin e sona</span> show answer"
+                    document.getElementById("answer").innerHTML = 'o lukin e sona&nbsp;<span class="roman">reveal&nbsp;answer</span>';
                     document.getElementById("answer").onclick = () => {
                         document.getElementById("answer").innerHTML = (
-                            `<a href="https://sona.pona.la/wiki/${answer}" target="_blank"><span class='sitelen'>${data['answer_glyph']}</span> ${answer}</a>`
+                            `<a href="https://sona.pona.la/wiki/${answer}" target="_blank">${data['answer_glyph']}&nbsp;<span class='roman'>${answer}</span></a>`
                         );
                     }
+
+                    // document.getElementById("buy").innerHTML = '<a href="https://www.mercari.com/us/item/m59250581800/?sv=0" target="_blank">o esun e lipu sijelo&nbsp;<span class=\'roman\'>buy&nbsp;a&nbsp;hard&nbsp;copy</span></a>';
                 })
         },
         1500,
