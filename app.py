@@ -3,7 +3,7 @@ import random
 
 from flask import Flask, render_template, send_from_directory
 
-from main import WORDS_IN_DECK, SITELEN_VARIANTS
+from toki_pona_constants import WORDS_IN_DECK, SITELEN_VARIANTS
 
 app = Flask(__name__)
 
