@@ -17,8 +17,8 @@
 
         h2 {
             text-align: center;
-            font-family: sitelenselikiwenasuki, sans-serif;
-            font-size: 5vh;
+            font-family: sans-serif;
+            font-size: 3.5vh;
             margin-bottom: 1vh;
             color: #000099;
             background-color: #ffff63;
@@ -48,7 +48,7 @@
     </style>
 </head>
 <body>
-<h2 id="instructions">o awen</h2>
+<h2 id="instructions"><span class="sitelen">o awen</span> wait...</h2>
 <div id="cards">
     <img id="left" src="/static/img/back.png"/>
     <img id="right" src="/static/img/back.png"/>
@@ -61,7 +61,7 @@
             fetch("/pair")
                 .then(res => res.json())
                 .then(data => {
-                    document.getElementById("instructions").innerHTML = "o alasa e sama";
+                    document.getElementById("instructions").innerHTML = "<span class='sitelen'>o alasa e sama</span> find the match!";
                     ["left", "right"].forEach(side => {
                         document.getElementById(side).setAttribute("src", `static/img/${data[side]}.png`)
                     })
@@ -73,7 +73,7 @@
                     document.getElementById("answer").innerHTML = "<span class='sitelen'>o lukin e sona</span> show answer"
                     document.getElementById("answer").onclick = () => {
                         document.getElementById("answer").innerHTML = (
-                            `<a href="https://sona.pona.la/wiki/${answer}" target="_blank"><span class='sitelen'>${answer}</span> ${answer}</a>`
+                            `<a href="https://sona.pona.la/wiki/${answer}" target="_blank"><span class='sitelen'>${data['answer_glyph']}</span> ${answer}</a>`
                         );
                     }
                 })

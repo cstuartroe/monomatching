@@ -424,7 +424,7 @@ TOKI_PONA_FREQUENCY_ORDER = [
     "misikeke",
     "ku",
     "kokosila",
-    "kije", # -santakalu, not sure why the font skips this part
+    "kijetesantakalu",
     "jasima",
     "meso",
     "epiku",
@@ -435,6 +435,11 @@ TOKI_PONA_FREQUENCY_ORDER = [
 TOKI_PONA_SKIP = ["epiku", "oko", "n", "kokosila"]
 
 WORDS_IN_DECK = [word for word in TOKI_PONA_FREQUENCY_ORDER if word not in TOKI_PONA_SKIP]
+
+SITELEN_VARIANTS = {
+    "soko": "soko2",
+    "namako": "namako2",
+}
 
 
 def toki_pona_rescale(img: Image.Image):
@@ -471,9 +476,10 @@ def make_toki_pona_cards():
             for col in range(3):
                 x = round(TOKI_PONA_ROW_SIZE*(col + .5)) + TOKI_PONA_MARGIN_SIZE
                 y = round(TOKI_PONA_ROW_SIZE*(row + .5)) + TOKI_PONA_MARGIN_SIZE
+                word = WORDS_IN_DECK[card[row*3 + col]]
                 draw.text(
                     (x, y),
-                    WORDS_IN_DECK[card[row*3 + col]],
+                    SITELEN_VARIANTS.get(word, word),
                     (0, 0, 0),
                     font=TOKI_PONA_FONT,
                     anchor="mm",

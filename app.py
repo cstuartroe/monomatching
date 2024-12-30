@@ -3,7 +3,7 @@ import random
 
 from flask import Flask, render_template, send_from_directory
 
-from main import WORDS_IN_DECK
+from main import WORDS_IN_DECK, SITELEN_VARIANTS
 
 app = Flask(__name__)
 
@@ -20,11 +20,13 @@ def get_pair():
 
     left_index, right_index = random.sample(list(range(len(cards))), 2)
     answer = WORDS_IN_DECK[list(set(cards[left_index]) & set(cards[right_index]))[0]]
+    answer_glyph = SITELEN_VARIANTS.get(answer, answer)
 
     return {
         "left": left_index,
         "right": right_index,
         "answer": answer,
+        "answer_glyph": answer_glyph,
     }
 
 
