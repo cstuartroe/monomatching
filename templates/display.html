@@ -1,0 +1,86 @@
+<html lang="en">
+<head>
+    <title>o alasa e sama</title>
+    <style>
+        @font-face { font-family: sitelenselikiwenasuki; src: url({{ url_for('static', filename='sitelenselikiwenasuki.ttf') }}); }
+
+        body {
+        }
+
+        img {
+            max-height: 60vh;
+            max-width: 40vw;
+            margin: auto;
+            border: 2px solid black;
+            border-radius: 6vh;
+        }
+
+        h2 {
+            text-align: center;
+            font-family: sitelenselikiwenasuki, sans-serif;
+            font-size: 5vh;
+            margin-bottom: 1vh;
+            color: #000099;
+            background-color: #ffff63;
+        }
+
+        #cards {
+            display: flex;
+            padding: 0 calc(40vw - 40vh);
+        }
+
+        #new_game, #answer {
+            cursor: pointer;
+            text-align: center;
+            font-family: sans-serif;
+            padding: 2vh;
+            font-size: 2vh;
+        }
+
+        a {
+            color: #000099;
+        }
+
+        .sitelen {
+            font-family: sitelenselikiwenasuki, sans-serif;
+            font-size: 150%;
+        }
+    </style>
+</head>
+<body>
+<h2 id="instructions">o awen</h2>
+<div id="cards">
+    <img id="left" src="/static/img/back.png"/>
+    <img id="right" src="/static/img/back.png"/>
+</div>
+<div id="new_game"></div>
+<div id="answer"></div>
+<script>
+    setTimeout(
+        () => {
+            fetch("/pair")
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById("instructions").innerHTML = "o alasa e sama";
+                    ["left", "right"].forEach(side => {
+                        document.getElementById(side).setAttribute("src", `static/img/${data[side]}.png`)
+                    })
+
+                    document.getElementById("new_game").innerHTML = "<span class='sitelen'>o musi sin</span> new game"
+                    document.getElementById("new_game").onclick = () => window.location.reload();
+
+                    const answer = data['answer'];
+                    document.getElementById("answer").innerHTML = "<span class='sitelen'>o lukin e sona</span> show answer"
+                    document.getElementById("answer").onclick = () => {
+                        document.getElementById("answer").innerHTML = (
+                            `<a href="https://sona.pona.la/wiki/${answer}" target="_blank"><span class='sitelen'>${answer}</span> ${answer}</a>`
+                        );
+                    }
+                })
+        },
+        1500,
+    )
+
+</script>
+</body>
+</html>

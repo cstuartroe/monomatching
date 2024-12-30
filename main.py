@@ -284,8 +284,9 @@ TOKI_PONA_ROW_SIZE = 600
 TOKI_PONA_TITLE_ROW_SIZE = 900
 TOKI_PONA_MARGIN_SIZE = 200
 TOKI_PONA_CARD_SIZE = (TOKI_PONA_ROW_SIZE*3 + TOKI_PONA_MARGIN_SIZE*2, TOKI_PONA_ROW_SIZE*4 + TOKI_PONA_MARGIN_SIZE*2)
-TOKI_PONA_FONT = ImageFont.truetype("sitelenselikiwenasuki.ttf", 400)
-TOKI_PONA_FONT_LARGE = ImageFont.truetype("sitelenselikiwenasuki.ttf", 800)
+TOKI_PONA_FONT_LOCATION = "flaskr/static/sitelenselikiwenasuki.ttf"
+TOKI_PONA_FONT = ImageFont.truetype(TOKI_PONA_FONT_LOCATION, 400)
+TOKI_PONA_FONT_LARGE = ImageFont.truetype(TOKI_PONA_FONT_LOCATION, 800)
 
 
 # based on one small corpus, not really authoritative but doesn't need to be
