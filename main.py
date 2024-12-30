@@ -1,12 +1,24 @@
+import json
 import os
 import random
 
 from matplotlib import pyplot as plt
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 from tqdm import tqdm
 
 
 Deck = list[set[int]]
+OrderedDeck = list[list[int]]
+
+
+def save_ordered_deck(deck: OrderedDeck, filename: str):
+    with open(filename, "w") as fh:
+        json.dump(deck, fh, indent=2)
+
+
+def load_ordered_deck(filename: str) -> OrderedDeck:
+    with open("filename", "r") as fh:
+        return json.load(fh)
 
 
 def construct_deck(symbols_per_card: int) -> Deck:
@@ -159,7 +171,7 @@ def num_symbols(deck: Deck):
 def remap_symbols(deck: Deck):
     occurrences = symbol_counts(deck)
 
-    sorted_symbols = sorted(list(occurrences.keys()), key=lambda k: occurrences[k])
+    sorted_symbols = sorted(list(occurrences.keys()), key=lambda k: -occurrences[k])
     symbol_map = {
         k: v
         for k, v in zip(sorted_symbols, range(len(sorted_symbols)))
@@ -174,7 +186,7 @@ def remap_symbols(deck: Deck):
     ]
 
 
-def construct_reduced_deck(symbols: int):
+def construct_reduced_deck(symbols: int) -> Deck:
     symbols_per_card = 1
 
     while True:
@@ -236,7 +248,7 @@ def plot_reduced_deck_sizes():
     plt.show()
 
 
-def shuffle_deck(deck: Deck):
+def shuffle_deck(deck: Deck) -> OrderedDeck:
     deck = [
         list(card)
         for card in deck
@@ -266,12 +278,162 @@ def paste_img_center(background: Image.Image, sprite: Image.Image, x, y):
     )
 
 
-TOKI_PONA_IMAGE_DIR = "image_sets/toki_pona"
-TOKI_PONA_SKIP = ["epiku", "oko", "n", "kokosila"]
 TOKI_PONA_DECK_DIR = "decks/toki_pona"
+TOKI_PONA_DECK_JSON = "deck.json"
 TOKI_PONA_ROW_SIZE = 600
+TOKI_PONA_TITLE_ROW_SIZE = 900
 TOKI_PONA_MARGIN_SIZE = 200
 TOKI_PONA_CARD_SIZE = (TOKI_PONA_ROW_SIZE*3 + TOKI_PONA_MARGIN_SIZE*2, TOKI_PONA_ROW_SIZE*4 + TOKI_PONA_MARGIN_SIZE*2)
+TOKI_PONA_FONT = ImageFont.truetype("sitelenselikiwenasuki.ttf", 400)
+TOKI_PONA_FONT_LARGE = ImageFont.truetype("sitelenselikiwenasuki.ttf", 800)
+
+
+# based on one small corpus, not really authoritative but doesn't need to be
+TOKI_PONA_FREQUENCY_ORDER = [
+    "li",
+    "e",
+    "jan",
+    "tawa",
+    "pi",
+    "ona",
+    "ni",
+    "mi",
+    "la",
+    "lawa",
+    "ma",
+    "sina",
+    "lon",
+    "kama",
+    "toki",
+    "ala",
+    "tan",
+    "tenpo",
+    "sewi",
+    "ike",
+    "o",
+    "ale",
+    "tomo",
+    "mute",
+    "pana",
+    "pona",
+    "pali",
+    "pilin",
+    "kulupu",
+    "meli",
+    "telo",
+    "wile",
+    "suli",
+    "sama",
+    "lili",
+    "lukin",
+    "awen",
+    "wawa",
+    "anpa",
+    "en",
+    "wan",
+    "nasin",
+    "pakala",
+    "weka",
+    "moli",
+    "sona",
+    "pini",
+    "ante",
+    "utala",
+    "sinpin",
+    "jo",
+    "suno",
+    "ken",
+    "insa",
+    "poka",
+    "tu",
+    "mama",
+    "moku",
+    "kute",
+    "kepeken",
+    "taso",
+    "ijo",
+    "kalama",
+    "alasa",
+    "musi",
+    "nanpa",
+    "sitelen",
+    "kiwen",
+    "lupa",
+    "mije",
+    "sike",
+    "poki",
+    "unpa",
+    "len",
+    "palisa",
+    "noka",
+    "kon",
+    "mun",
+    "anu",
+    "uta",
+    "seme",
+    "olin",
+    "seli",
+    "linja",
+    "pimeja",
+    "nimi",
+    "sin",
+    "jaki",
+    "mani",
+    "sijelo",
+    "soweli",
+    "ilo",
+    "luka",
+    "ko",
+    "nena",
+    "open",
+    "kasi",
+    "nasa",
+    "a",
+    "mu",
+    "kili",
+    "supa",
+    "lipu",
+    "lape",
+    "monsi",
+    "pan",
+    "jelo",
+    "esun",
+    "loje",
+    "selo",
+    "waso",
+    "pipi",
+    "laso",
+    "pu",
+    "kule",
+    "lete",
+    "akesi",
+    "suwi",
+    "kala",
+    "walo",
+
+    # Here and below is ku
+    "oko",
+    "lanpan",
+    "kin",
+    "kipisi",
+    "monsuta",
+    "namako",
+    "leko",
+    "tonsi",
+    "misikeke",
+    "ku",
+    "kokosila",
+    "kije", # -santakalu, not sure why the font skips this part
+    "jasima",
+    "meso",
+    "epiku",
+    "soko",
+    "n",
+]
+
+TOKI_PONA_SKIP = ["epiku", "oko", "n", "kokosila"]
+
+WORDS_IN_DECK = [word for word in TOKI_PONA_FREQUENCY_ORDER if word not in TOKI_PONA_SKIP]
 
 
 def toki_pona_rescale(img: Image.Image):
@@ -281,56 +443,58 @@ def toki_pona_rescale(img: Image.Image):
 
 
 def make_toki_pona_cards():
-    random.seed(9)
+    random.seed(50)
 
     deck = construct_reduced_deck(133)
     verify_monomatching(deck)
-    # while len(deck) > 90:
-    #     deck = remove_least_gapping_card(deck)
+    while len(deck) > 90:
+        deck = remove_least_gapping_card(deck)
     deck = remap_symbols(deck)
 
     shuffled_deck = shuffle_deck(deck)
+    save_ordered_deck(shuffled_deck, TOKI_PONA_DECK_JSON)
 
-    card_image_filenames = [
-        f
-        for f in sorted(list(os.listdir(TOKI_PONA_IMAGE_DIR)))
-        if f.removesuffix(".png") not in TOKI_PONA_SKIP
-    ]
-    random.shuffle(card_image_filenames)
-
-    print_occurrences(deck, card_image_filenames)
-    print()
-    print(num_symbols(deck))
-    print(len(deck))
-
-    card_images = [
-        toki_pona_rescale(Image.open(f"{TOKI_PONA_IMAGE_DIR}/{f}"))
-        for f in card_image_filenames
-    ]
-    card_images_by_name = {
-        name.removesuffix(".png"): img
-        for name, img in zip(card_image_filenames, card_images)
-    }
+    print_occurrences(deck, WORDS_IN_DECK)
+    # print()
+    # print(num_symbols(deck))
+    # print(len(deck))
 
     os.makedirs(TOKI_PONA_DECK_DIR, exist_ok=True)
+    for filename in os.listdir(TOKI_PONA_DECK_DIR):
+        os.unlink(f"{TOKI_PONA_DECK_DIR}/{filename}")
+
     for i, card in enumerate(tqdm(shuffled_deck)):
         card_image = Image.new("RGBA", TOKI_PONA_CARD_SIZE, (255, 255, 255))
+        draw = ImageDraw.Draw(card_image)
         for row in range(4):
             for col in range(3):
-                symbol_image = card_images[card[row*3 + col]]
                 x = round(TOKI_PONA_ROW_SIZE*(col + .5)) + TOKI_PONA_MARGIN_SIZE
                 y = round(TOKI_PONA_ROW_SIZE*(row + .5)) + TOKI_PONA_MARGIN_SIZE
-                paste_img_center(card_image, symbol_image, x, y)
+                draw.text(
+                    (x, y),
+                    WORDS_IN_DECK[card[row*3 + col]],
+                    (0, 0, 0),
+                    font=TOKI_PONA_FONT,
+                    anchor="mm",
+                    features=["liga"],
+                ),
         card_image.save(f"{TOKI_PONA_DECK_DIR}/{i}.png")
 
     card_back = Image.new("RGBA", TOKI_PONA_CARD_SIZE, (255, 255, 255))
+    draw = ImageDraw.Draw(card_back)
     title = ["o", "alasa", "e", "sama"]
     for row in range(2):
         for col in range(2):
-            x = TOKI_PONA_CARD_SIZE[0]//2 + round(TOKI_PONA_ROW_SIZE*(-.5 + col))
-            y = TOKI_PONA_CARD_SIZE[1]//2 + round(TOKI_PONA_ROW_SIZE*(-.5 + row))
-            symbol_image = card_images_by_name[title[row*2 + col]]
-            paste_img_center(card_back, symbol_image, x, y)
+            x = TOKI_PONA_CARD_SIZE[0]//2 + round(TOKI_PONA_TITLE_ROW_SIZE*(-.5 + col))
+            y = TOKI_PONA_CARD_SIZE[1]//2 + round(TOKI_PONA_TITLE_ROW_SIZE*(-.5 + row))
+            draw.text(
+                (x, y),
+                title[row*2 + col],
+                (0, 0, 0),
+                font=TOKI_PONA_FONT_LARGE,
+                anchor="mm",
+                features=["liga"],
+            ),
     card_back.save(f"{TOKI_PONA_DECK_DIR}/back.png")
 
 
