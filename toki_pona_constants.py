@@ -1,3 +1,5 @@
+import json
+
 TOKI_PONA_DECK_DIR = "decks/toki_pona"
 TOKI_PONA_DECK_JSON = "deck.json"
 TOKI_PONA_ROW_SIZE = 600
@@ -157,3 +159,16 @@ SITELEN_VARIANTS = {
     "soko": "soko2",
     "namako": "namako2",
 }
+
+Deck = list[set[int]]
+OrderedDeck = list[list[int]]
+
+
+def save_ordered_deck(deck: OrderedDeck, filename: str):
+    with open(filename, "w") as fh:
+        json.dump(deck, fh, indent=2)
+
+
+def load_ordered_deck(filename: str) -> OrderedDeck:
+    with open(filename, "r") as fh:
+        return json.load(fh)

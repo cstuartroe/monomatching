@@ -1,4 +1,3 @@
-import json
 import os
 import random
 
@@ -7,20 +6,6 @@ from PIL import Image, ImageFont, ImageDraw
 from tqdm import tqdm
 
 from toki_pona_constants import *
-
-
-Deck = list[set[int]]
-OrderedDeck = list[list[int]]
-
-
-def save_ordered_deck(deck: OrderedDeck, filename: str):
-    with open(filename, "w") as fh:
-        json.dump(deck, fh, indent=2)
-
-
-def load_ordered_deck(filename: str) -> OrderedDeck:
-    with open("filename", "r") as fh:
-        return json.load(fh)
 
 
 def construct_deck(symbols_per_card: int) -> Deck:
